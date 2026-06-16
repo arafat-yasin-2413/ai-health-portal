@@ -31,7 +31,6 @@ export const premiumMockRecords: MedicalRecord[] = [
     {
         recordId: "REC-001",
         patientId: "PAT-101",
-        patientName: "Jobayer",
         date: "2024-03-12",
         doctorName: "Dr. Arman Ahmed",
         patientCase: "Severe Dry Cough and Acute Fatigue",
@@ -65,7 +64,6 @@ export const premiumMockRecords: MedicalRecord[] = [
     {
         recordId: "REC-002",
         patientId: "PAT-101",
-        patientName: "Rakib",
         date: "2025-01-05",
         doctorName: "Dr. Sayed Rahman",
         patientCase: "High Fever and Body Ache",
@@ -99,7 +97,6 @@ export const premiumMockRecords: MedicalRecord[] = [
     {
         recordId: "REC-003",
         patientId: "PAT-101",
-        patientName: "Kamrul",
         date: "2026-05-20",
         doctorName: "Dr. Arman Ahmed",
         patientCase: "Routine Checkup & Vitamin Deficiency Follow-up",

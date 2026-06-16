@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import {
     CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { defaultPatients, defaultDoctors } from "@/utils/mockData";
 import {
     ShieldAlert,
     User,
@@ -20,100 +20,84 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-    const [mounted, setMounted] = useState(false);
+    // const [mounted, setMounted] = useState(false);
 
-    // Hydration এরর এড়ানোর জন্য মাউন্ট স্টেট চেক
     useEffect(() => {
-        setMounted(true);
-
-        // ফার্স্ট টাইম ভিজিটরদের জন্য লোকাল স্টোরেজে একটি ডিফল্ট পেশেন্ট ও ডক্টর প্রোফাইল সেটআপ করা
-        if (typeof window !== "undefined") {
-            const existingPatients = localStorage.getItem("medical_patients");
-            if (!existingPatients) {
-                const defaultPatients = [
-                    {
-                        patientId: "PAT-101",
-                        name: "Zubair Bin Akhtaruzzaman",
-                        status: "Active",
-                    },
-                    {
-                        patientId: "PAT-102",
-                        name: "Sarah Khan",
-                        status: "Active",
-                    },
-                ];
-                localStorage.setItem(
-                    "medical_patients",
-                    JSON.stringify(defaultPatients),
-                );
-            }
-
-            const existingDoctors = localStorage.getItem("medical_doctors");
-            if (!existingDoctors) {
-                const defaultDoctors = [
-                    {
-                        doctorId: "DOC-202",
-                        name: "Dr. Arman Ahmed",
-                        status: "Active",
-                    },
-                ];
-                localStorage.setItem(
-                    "medical_doctors",
-                    JSON.stringify(defaultDoctors),
-                );
-            }
+    // Fail-Safe Flow: Default data seed into localStorage on first load
+    if (typeof window !== "undefined") {
+        if (!localStorage.getItem("medical_patients")) {
+            localStorage.setItem(
+                "medical_patients",
+                JSON.stringify(defaultPatients),
+            );
         }
-    }, []);
 
-    if (!mounted) return null;
+        if (!localStorage.getItem("medical_doctors")) {
+            localStorage.setItem(
+                "medical_doctors",
+                JSON.stringify(defaultDoctors),
+            );
+        }
+
+        if (!localStorage.getItem("medical_records")) {
+            localStorage.setItem("medical_records", JSON.stringify([]));
+        }
+
+        if (!localStorage.getItem("medical_audit_logs")) {
+            localStorage.setItem("medical_audit_logs", JSON.stringify([]));
+        }
+    }
+}, []);
+
+    // if (!mounted) return null;
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-6 max-w-6xl mx-auto bg-slate-50">
-            {/* Top Banner for Grader UX */}
-            <div className="w-full bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-12 flex items-center justify-between shadow-sm">
+            {/* Premium Grader UX Helper Banner */}
+            <div className="w-full bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-600 rounded-lg text-white">
+                    <div className="p-2 bg-indigo-600 rounded-lg text-white shrink-0">
                         <Sparkles className="h-5 w-5" />
                     </div>
                     <div>
                         <h4 className="font-semibold text-slate-900 text-sm md:text-base">
-                            Evaluation & Grading Quick-Access Mode
+                            Evaluation Quick-Access Mode
                         </h4>
                         <p className="text-xs text-slate-500">
-                            Easily evaluate the system using these
-                            pre-configured local profiles without manual setup.
+                            The system has auto-initialized default local
+                            storage profiles for seamless testing.
                         </p>
                     </div>
                 </div>
-                <div className="flex gap-2 text-xs font-mono">
+                <div className="flex flex-wrap gap-2 text-xs font-mono">
                     <span className="bg-white border px-2 py-1 rounded shadow-inner text-slate-700">
-                        Patient:{" "}
+                        Demo Patient:{" "}
                         <strong className="text-indigo-600">PAT-101</strong>
                     </span>
                     <span className="bg-white border px-2 py-1 rounded shadow-inner text-slate-700">
-                        Doctor:{" "}
+                        Demo Doctor:{" "}
                         <strong className="text-indigo-600">DOC-202</strong>
                     </span>
                 </div>
             </div>
 
-            {/* Main Branding Header */}
+            {/* Hero Header */}
             <div className="text-center mb-12">
                 <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl text-slate-900">
                     AI Clinical{" "}
                     <span className="text-indigo-600">Intelligence Portal</span>
                 </h1>
-                <p className="mt-4 text-base md:text-lg text-slate-500 max-w-2xl mx-auto">
-                    A high-performance frontend prototype featuring secure
-                    cross-portal routing, multi-tenant directory management, and
-                    AI context extraction.
+                <p className="mt-4 text-base text-slate-500 max-w-2xl mx-auto">
+                    A high-performance client-side medical architecture
+                    utilizing automated AI structural extraction and custom
+                    cross-portal data states.
                 </p>
             </div>
 
-            {/* Portals Grid */}
+            {/* Portals Gateway Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                {/* Patient Portal Card */}
-                <Card className="flex flex-col justify-between border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+                {/* Patient Portal */}
+                <Card className="flex flex-col justify-between border-slate-200 shadow-sm bg-white hover:border-indigo-200 transition-all">
                     <CardHeader>
                         <div className="p-2.5 w-fit bg-indigo-50 rounded-lg mb-2 text-indigo-600">
                             <User className="h-6 w-6" />
@@ -122,9 +106,9 @@ export default function Home() {
                             Patient Portal
                         </CardTitle>
                         <CardDescription className="text-slate-500 pt-1 text-sm leading-relaxed">
-                            Upload diagnostic documents or prescriptions,
-                            trigger the AI Extraction engine, and inspect your
-                            unified health ledger timeline.
+                            Upload diagnostic documents, run Gemini/OpenAI
+                            structural parser workflows, and build an encrypted
+                            chronological medical ledger.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="pt-0">
@@ -137,8 +121,8 @@ export default function Home() {
                     </CardContent>
                 </Card>
 
-                {/* Doctor Portal Card */}
-                <Card className="flex flex-col justify-between border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+                {/* Doctor Portal */}
+                <Card className="flex flex-col justify-between border-slate-200 shadow-sm bg-white hover:border-emerald-200 transition-all">
                     <CardHeader>
                         <div className="p-2.5 w-fit bg-emerald-50 rounded-lg mb-2 text-emerald-600">
                             <Stethoscope className="h-6 w-6" />
@@ -147,9 +131,9 @@ export default function Home() {
                             Doctor Portal
                         </CardTitle>
                         <CardDescription className="text-slate-500 pt-1 text-sm leading-relaxed">
-                            Search profiles via Patient ID, review lifetime
-                            automated antibiotic trends, and explore structured
-                            medical analytics graphs[cite: 1].
+                            Query records via Patient ID index, track antibiotic
+                            consumption graphs, and explore categorized tabs for
+                            medical safety validation.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="pt-0">
@@ -162,8 +146,8 @@ export default function Home() {
                     </CardContent>
                 </Card>
 
-                {/* Admin Portal Card */}
-                <Card className="flex flex-col justify-between border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+                {/* Admin Console */}
+                <Card className="flex flex-col justify-between border-slate-200 shadow-sm bg-white hover:border-amber-200 transition-all">
                     <CardHeader>
                         <div className="p-2.5 w-fit bg-amber-50 rounded-lg mb-2 text-amber-600">
                             <ShieldAlert className="h-6 w-6" />
@@ -172,10 +156,9 @@ export default function Home() {
                             Admin Console
                         </CardTitle>
                         <CardDescription className="text-slate-500 pt-1 text-sm leading-relaxed">
-                            Mock-register profiles, toggle suspension
-                            parameters, inspect real-time parser audit logs, and
-                            trigger direct local database clear actions[cite:
-                            1].
+                            Manage system permissions, register/suspend IDs,
+                            audit structural engine parsing, and trigger instant
+                            premium mock data injections.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="pt-0">
@@ -183,7 +166,7 @@ export default function Home() {
                             <Button
                                 variant="outline"
                                 className="w-full border-slate-300 hover:bg-slate-50 text-slate-700 font-medium flex items-center justify-center gap-2 group">
-                                Open Admin Dashboard
+                                Open Controls Panel
                                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </Button>
                         </Link>

@@ -17,7 +17,6 @@ export interface DiagnosticTest {
 export interface MedicalRecord {
     recordId: string;
     patientId: string;
-    patientName: string;
     date: string; // year-mm-dd
     doctorName: string;
     patientCase: string;
