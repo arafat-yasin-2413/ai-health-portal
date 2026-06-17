@@ -48,7 +48,7 @@ export default function PatientPage() {
         loadRecords();
     }, [loadRecords]);
 
-    // ডক অনুযায়ী ফাইলকে Base64 এ কনভার্ট করার ইউটিলিটি ফাংশন
+    // utility function to convert file in base64 
     const convertFileToBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -58,7 +58,7 @@ export default function PatientPage() {
         });
     };
 
-    // react-dropzone ইন্টিগ্রেশন এবং AI এক্সিকিউশন পাইপলাইন
+    // react-dropzone integration with AI execution pipeline
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
             if (acceptedFiles.length === 0) return;
