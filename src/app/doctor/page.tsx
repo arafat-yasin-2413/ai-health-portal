@@ -295,6 +295,7 @@ export default function DoctorDashboard() {
                                                                                 {
                                                                                     med.duration
                                                                                 }
+
                                                                                 )
                                                                             </td>
                                                                             <td className="p-2.5 text-right font-mono text-slate-500 pr-4">
