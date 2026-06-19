@@ -24,7 +24,7 @@ export default function AdminPortalCard() {
                     <Link href="/admin" className="w-full">
                         <Button
                             variant="outline"
-                            className="w-full border-slate-300 hover:bg-slate-50 text-slate-700 font-medium flex items-center justify-center gap-2 group">
+                            className="w-full border-slate-300 hover:bg-slate-50 text-slate-700 font-medium flex items-center justify-center gap-2 group cursor-pointer">
                             Open Controls Panel
                             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>

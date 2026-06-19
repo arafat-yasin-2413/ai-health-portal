@@ -22,7 +22,7 @@ export default function DoctorPortalCard() {
                 </CardHeader>
                 <CardContent className="pt-0">
                     <Link href="/doctor" className="w-full">
-                        <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium flex items-center justify-center gap-2 group">
+                        <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium flex items-center justify-center gap-2 group cursor-pointer">
                             Launch Analytics View
                             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>

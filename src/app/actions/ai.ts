@@ -2,7 +2,7 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// ১. সার্ভার ও ক্লায়েন্ট দুই দিকের সেফটির জন্য ফলব্যাকসহ API Key ভ্যালিডেশন
+// 1. API Key validation with fallback for client side and server side
 const apiKey =
     process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
 
@@ -20,7 +20,7 @@ export async function parseMedicalDocument(
     patientId: string,
 ) {
     try {
-        // ২. রানটাইম গেটওয়ে চেক
+        // 2. Api key check on runtime
         if (!ai) {
             return {
                 success: false,
@@ -28,7 +28,7 @@ export async function parseMedicalDocument(
             };
         }
 
-        // ৩. স্ট্রং Base64 স্যানিটাইজেশন (কোনো প্রকার URI স্কিম বা প্রিফিক্স থাকলে তা রিমুভ করবে)
+        // 3. strong Base64 sanitization (will remove any uri skim or prefix)
         const base64Content = base64Data.includes("base64,")
             ? base64Data.split("base64,")[1]
             : base64Data;
@@ -61,26 +61,24 @@ export async function parseMedicalDocument(
             }
         `;
 
-        // ৪. এপিআই কল এক্সিকিউশন
-        // ৫. জেমিনি মডেল এক্সিকিউশন (with a quick automatic retry fallback)
-       
+        // API call execution with Gemini model fallback
         let response;
         try {
             response = await ai.models.generateContent({
-                // ফিক্স ১: নতুন SDK-এর জন্য মডেল ফরম্যাট
+                // model format for new SDK
                 model: "gemini-2.5-flash",
                 contents: [filePart, prompt],
                 config: { responseMimeType: "application/json" },
             });
         } catch (firstError) {
-            // যদি ডিমান্ড হাই থাকে বা ৫০৩ এরর আসে, ২ সেকেন্ড অপেক্ষা করে ১.৫ মডেল দিয়ে ব্যাকআপ ট্রাই করবে
+            // Model backup retry if error comes from new model.
             console.log(
                 "Model 2.5 busy or failed, switching automatically to 1.5-flash...",
             );
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // ২ সেকেন্ড পজ
+            await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds pause
 
             response = await ai.models.generateContent({
-                // ফিক্স ২: ফলব্যাক মডেলেও সঠিক নাম ব্যবহার করুন
+                // fallback model name
                 model: "gemini-1.5-flash",
                 contents: [filePart, prompt],
                 config: { responseMimeType: "application/json" },
@@ -95,7 +93,7 @@ export async function parseMedicalDocument(
             );
         }
 
-        // ৫. সেফটি ফিল্টার: জেমিনি যদি প্রম্পট অমান্য করে মার্কডাউন ব্যাকটিক্স (```json) দেয়, তা ক্লিন করার মেকানিজম
+        // 5. safety filter: Mechanism to clean markdown
         if (rawJson.includes("```")) {
             rawJson = rawJson
                 .replace(/```json/g, "")
@@ -103,12 +101,11 @@ export async function parseMedicalDocument(
                 .trim();
         }
 
-        // ৬. টাইপ-সেফ ডাটা পার্সিং
+        // 6. Type safe data parsing
         const parsedData = JSON.parse(rawJson);
 
         return { success: true, data: parsedData };
-    } catch (error: unknown) {
-        // টার্মিনালে আসল এরর অবজেক্টটি ডিটেইলসে দেখতে পাবেন (যেমন: Auth Failure, Model Not Found বা Syntax Error)
+    } catch (error) {
         console.error("Detailed Server AI Pipeline Crash Logs:", error);
 
         const errorMessage =

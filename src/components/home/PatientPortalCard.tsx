@@ -22,7 +22,7 @@ export default function PatientPortalCard() {
                 </CardHeader>
                 <CardContent className="pt-0">
                     <Link href="/patient" className="w-full">
-                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium flex items-center justify-center gap-2 group">
+                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium flex items-center justify-center gap-2 group cursor-pointer">
                             Enter Patient Hub
                             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>

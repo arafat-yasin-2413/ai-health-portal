@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { User, Stethoscope, ShieldAlert, Home } from "lucide-react";
 import Image from "next/image";
+import Logo from "../shared/Logo";
 
 export function PortalNav() {
     const pathname = usePathname();
@@ -20,21 +21,9 @@ export function PortalNav() {
         <nav className="w-full bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
             <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
                 {/* Logo Section */}
-                <div className="flex items-center gap-2 shrink-0">
-                    <div>
-                        <Image
-                            src="/mainLogo.png"
-                            className=""
-                            width={35}
-                            height={35}
-                            alt="Picture of the Logo"
-                        />
-                    </div>
-
-                    <span className="font-bold text-slate-900 tracking-tight text-sm md:text-base">
-                        Health<span className="text-indigo-600">Sync</span>
-                    </span>
-                </div>
+                <Link href="/">
+                    <Logo /> 
+                </Link>
 
                 {/* Navigation Links */}
                 <div className="flex items-center gap-1 md:gap-2 overflow-x-auto no-scrollbar">

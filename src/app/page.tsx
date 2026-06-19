@@ -1,15 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+
 import { defaultPatients, defaultDoctors } from "@/utils/mockData";
 import {
     ShieldAlert,
