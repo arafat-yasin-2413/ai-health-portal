@@ -27,7 +27,6 @@ export default function AdminConsole() {
     const [logs, setLogs] = useState<AuditLog[]>([]);
 
     const loadAdminState = () => {
-
         const initialPatients: PatientProfile[] = [
             {
                 patientId: "PAT-101",
@@ -202,9 +201,9 @@ export default function AdminConsole() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-950">
+        <div className="min-h-screen bg-slate-50 text-slate-950 flex flex-col">
             <PortalNav />
-            <main className="max-w-6xl mx-auto p-4 md:p-6 mt-6 space-y-6">
+            <main className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6 md:space-y-8 flex-1">
                 <h1 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
                     Root Administrative Panel
                 </h1>

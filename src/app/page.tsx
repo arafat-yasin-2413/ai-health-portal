@@ -55,7 +55,7 @@ export default function Home() {
     // if (!mounted) return null;
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-6 max-w-6xl mx-auto bg-slate-50">
+        <div className="flex flex-col items-center justify-center min-h-screen p-6 max-w-7xl mx-auto bg-slate-50">
             {/* Premium Grader UX Helper Banner */}
             <div className="w-full bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
                 <div className="flex items-center gap-3">

@@ -80,10 +80,10 @@ export default function DoctorDashboard() {
     );
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-950">
+        <div className="min-h-screen bg-slate-50 text-slate-950 flex flex-col">
             <PortalNav />
 
-            <main className="max-w-6xl mx-auto p-4 md:p-6 mt-6 space-y-6">
+            <main className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6 md:space-y-8 flex-1">
                 {/* Top Search Index Bar */}
                 <Card className="bg-white border-slate-200 shadow-sm">
                     <CardContent className="p-4 flex flex-col sm:flex-row gap-3 items-center">

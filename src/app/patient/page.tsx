@@ -26,9 +26,15 @@ import {
 } from "lucide-react";
 import { PortalNav } from "@/components/nav/portal-nav";
 
+interface Patient {
+    patientId: string;
+    name: string;
+}
+
 export default function PatientPage() {
     const [mounted, setMounted] = useState(false);
     const [activePatientId, setActivePatientId] = useState("PAT-101");
+    const [patients, setPatients] = useState<Patient[]>([]);
     const [records, setRecords] = useState<MedicalRecord[]>([]);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -46,6 +52,30 @@ export default function PatientPage() {
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
+
+    // utility for loading dynamic patient list from localStorage
+    useEffect(() => {
+        setMounted(true);
+
+        // getting patient data from localStorage
+        const storedPatients = safeGetStorage<Patient[]>(
+            "medical_patients",
+            [],
+        );
+
+        if (storedPatients && storedPatients.length > 0) {
+            setPatients(storedPatients);
+            setActivePatientId(storedPatients[0].patientId);
+        } else {
+            // fallback data (when localStorage is empty)
+            const defaultPatients: Patient[] = [
+                { patientId: "PAT-101", name: "(D)Zubair Bin Akhtaruzzaman" },
+                { patientId: "PAT-102", name: "(D)Sarah Khan" },
+            ];
+            setPatients(defaultPatients);
+            setActivePatientId("PAT-101");
+        }
+    }, []);
 
     const loadRecords = useCallback(() => {
         const allRecords = safeGetStorage<MedicalRecord[]>(
@@ -92,15 +122,15 @@ export default function PatientPage() {
             try {
                 const base64Data = await convertFileToBase64(file);
                 const result = await parseMedicalDocument(
-                    base64Data, file.type,
+                    base64Data,
+                    file.type,
                     activePatientId,
                 );
 
                 if (result.success && result.data) {
-
                     const safeRecord = {
                         ...result.data,
-                        recordId: `REC-${Math.floor(100000 + Math.random() * 900000)}`
+                        recordId: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
                     };
 
                     appendMedicalRecord(safeRecord);
@@ -137,35 +167,36 @@ export default function PatientPage() {
     if (!mounted) return null;
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-950">
-            <PortalNav/>
-            <main className="max-w-5xl mx-auto p-4 md:p-6 mt-6 space-y-8">
+        <div className="min-h-screen bg-slate-50 text-slate-950 flex flex-col">
+            <PortalNav />
+            {/* Main content area */}
+            <main className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6 md:space-y-8 flex-1">
                 {/* Header Section */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 md:p-6 rounded-xl border border-slate-200 shadow-xs">
                     <div>
-                        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">
+                        <h1 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl md:text-3xl">
                             Patient Document Hub
                         </h1>
-                        <p className="text-sm text-slate-500 mt-1">
+                        <p className="text-xs md:text-sm text-slate-500 mt-1">
                             Upload clinical reports using our smart AI Document
                             Extraction Engine.
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-lg border border-slate-200">
-                        <span className="text-xs font-semibold text-slate-500 px-2">
+                    {/* dynamic session handler */}
+                    <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-lg border border-slate-200 w-full sm:w-auto justify-between sm:justify-start">
+                        <span className="text-xs font-semibold text-slate-500 px-1 md:px-2 whitespace-nowrap">
                             Active Session:
                         </span>
                         <select
                             value={activePatientId}
                             onChange={(e) => setActivePatientId(e.target.value)}
-                            className="text-xs font-mono font-bold bg-white border border-slate-200 rounded px-2.5 py-1 text-indigo-600 focus:outline-none">
-                            <option value="PAT-101">
-                                PAT-101 (Zubair Bin Akhtaruzzaman)
-                            </option>
-                            <option value="PAT-102">
-                                PAT-102 (Sarah Khan)
-                            </option>
+                            className="text-xs font-mono font-bold bg-white border border-slate-200 rounded px-2.5 py-1 text-indigo-600 focus:outline-none cursor-pointer max-w-45 sm:max-w-xs truncate">
+                            {patients.map((patient) => (
+                                <option key={patient.patientId} value={patient.patientId}>
+                                    {patient.patientId} ({patient.name})
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
