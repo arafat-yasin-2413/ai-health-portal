@@ -6,11 +6,7 @@ import { parseMedicalDocument } from "@/app/actions/ai";
 import { appendMedicalRecord, safeGetStorage } from "@/utils/storageEngine";
 import { MedicalRecord } from "@/types/medical";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardHeader,
-    CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
     UploadCloud,
@@ -45,8 +41,6 @@ export default function PatientPage() {
         size: string;
         type: string;
     } | null>(null);
-
-   
 
     // utility for loading dynamic patient list from localStorage
     useEffect(() => {
@@ -88,7 +82,6 @@ export default function PatientPage() {
         loadRecords();
     }, [loadRecords]);
 
-    
     // react-dropzone integration with AI execution pipeline
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
@@ -114,19 +107,26 @@ export default function PatientPage() {
                 );
 
                 if (result.success && result.data) {
+                    // ensuring that record is saving under current active patient
                     const safeRecord = {
                         ...result.data,
+                        patientId: activePatientId, // override with current session id
                         recordId: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
                     };
 
                     appendMedicalRecord(safeRecord);
+
+                    // ui and timeline instant re-render
                     loadRecords();
-                    setSelectedFile(null); // hide file on successfull upload
+
+                    setSelectedFile(null);
+                    setErrorMsg(null);
                 } else {
                     setErrorMsg(
                         result.error ||
                             "AI pipeline could not parse the document structure.",
                     );
+                    setSelectedFile(null);
                 }
             } catch (err) {
                 setErrorMsg(
@@ -159,7 +159,7 @@ export default function PatientPage() {
             <main className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6 md:space-y-8 flex-1">
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 md:p-6 rounded-xl border border-slate-200 shadow-xs">
-                    <TopHeader/>
+                    <TopHeader />
 
                     {/* dynamic session handler */}
                     <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-lg border border-slate-200 w-full sm:w-auto justify-between sm:justify-start">
@@ -171,13 +171,14 @@ export default function PatientPage() {
                             onChange={(e) => setActivePatientId(e.target.value)}
                             className="text-xs font-mono font-bold bg-white border border-slate-200 rounded px-2.5 py-1 text-indigo-600 focus:outline-none cursor-pointer max-w-45 sm:max-w-xs truncate">
                             {patients.map((patient) => (
-                                <option key={patient.patientId} value={patient.patientId}>
+                                <option
+                                    key={patient.patientId}
+                                    value={patient.patientId}>
                                     {patient.patientId} ({patient.name})
                                 </option>
                             ))}
                         </select>
                     </div>
-
                 </div>
 
                 {/* react-dropzone Area */}
@@ -273,9 +274,7 @@ export default function PatientPage() {
                 )}
 
                 {/* Beautiful Skeleton Wave Processing States */}
-                {loading && (
-                    <LoaderSkeleton/>
-                )}
+                {loading && <LoaderSkeleton />}
 
                 {/* Chronological Ledger Timeline Component */}
                 <div className="space-y-6">

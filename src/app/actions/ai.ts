@@ -4,7 +4,7 @@ import { GoogleGenAI } from "@google/genai";
 
 // 1. API Key validation with fallback for client side and server side
 const apiKey =
-    process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+    process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
 if (!apiKey) {
     console.error(
@@ -62,28 +62,37 @@ export async function parseMedicalDocument(
         `;
 
         // API call execution with Gemini model fallback
-        let response;
-        try {
-            response = await ai.models.generateContent({
-                // model format for new SDK
-                model: "gemini-2.5-flash",
-                contents: [filePart, prompt],
-                config: { responseMimeType: "application/json" },
-            });
-        } catch (firstError) {
-            // Model backup retry if error comes from new model.
-            console.log(
-                "Model 2.5 busy or failed, switching automatically to 1.5-flash...",
-            );
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds pause
 
-            response = await ai.models.generateContent({
-                // fallback model name
-                model: "gemini-1.5-flash",
-                contents: [filePart, prompt],
-                config: { responseMimeType: "application/json" },
-            });
-        }
+        const response = await ai.models.generateContent({
+            model: "gemini-1.5-flash", 
+            contents: [filePart, prompt],
+            config: {
+                responseMimeType: "application/json",
+            },
+        });
+
+        // let response;
+        // try {
+        //     response = await ai.models.generateContent({
+        //         // model format for new SDK
+        //         model: "gemini-2.5-flash",
+        //         contents: [filePart, prompt],
+        //         config: { responseMimeType: "application/json" },
+        //     });
+        // } catch (firstError) {
+        //     // Model backup retry if error comes from new model.
+        //     console.log(
+        //         "Model 2.5 busy or failed, switching automatically to 1.5-flash...",
+        //     );
+        //     await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds pause
+
+        //     response = await ai.models.generateContent({
+        //         // fallback model name
+        //         model: "gemini-1.5-flash",
+        //         contents: [filePart, prompt],
+        //         config: { responseMimeType: "application/json" },
+        //     });
+        // }
 
         let rawJson = response.text;
 
