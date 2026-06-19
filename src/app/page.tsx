@@ -64,7 +64,7 @@ export default function Home() {
                     </div>
                     <div>
                         <h4 className="font-semibold text-slate-900 text-sm md:text-base">
-                            Evaluation Quick-Access Mode
+                            Quick-Access Mode
                         </h4>
                         <p className="text-xs text-slate-500">
                             The system has auto-initialized default local

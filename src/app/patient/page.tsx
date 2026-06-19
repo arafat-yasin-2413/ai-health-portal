@@ -25,6 +25,10 @@ import {
     CheckCircle2,
 } from "lucide-react";
 import { PortalNav } from "@/components/nav/PortalNav";
+import TopHeader from "@/components/patientPortal/TopHeader";
+import { formatFileSize } from "@/utils/formatFileSize";
+import { convertFileToBase64 } from "@/utils/convertFileToBase64";
+import LoaderSkeleton from "@/components/patientPortal/LoaderSkeleton";
 
 interface Patient {
     patientId: string;
@@ -44,14 +48,7 @@ export default function PatientPage() {
         type: string;
     } | null>(null);
 
-    // TODO: move it to utility function
-    const formatFileSize = (bytes: number): string => {
-        if (bytes === 0) return "0 Bytes";
-        const k = 1024;
-        const sizes = ["Bytest", "KB", "MB"];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-    };
+   
 
     // utility for loading dynamic patient list from localStorage
     useEffect(() => {
@@ -93,16 +90,7 @@ export default function PatientPage() {
         loadRecords();
     }, [loadRecords]);
 
-    // utility function to convert file in base64
-    const convertFileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
-    };
-
+    
     // react-dropzone integration with AI execution pipeline
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
@@ -173,15 +161,7 @@ export default function PatientPage() {
             <main className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6 md:space-y-8 flex-1">
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 md:p-6 rounded-xl border border-slate-200 shadow-xs">
-                    <div>
-                        <h1 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl md:text-3xl">
-                            Patient Document Hub
-                        </h1>
-                        <p className="text-xs md:text-sm text-slate-500 mt-1">
-                            Upload clinical reports using our smart AI Document
-                            Extraction Engine.
-                        </p>
-                    </div>
+                    <TopHeader/>
 
                     {/* dynamic session handler */}
                     <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-lg border border-slate-200 w-full sm:w-auto justify-between sm:justify-start">
@@ -199,6 +179,7 @@ export default function PatientPage() {
                             ))}
                         </select>
                     </div>
+
                 </div>
 
                 {/* react-dropzone Area */}
@@ -295,20 +276,7 @@ export default function PatientPage() {
 
                 {/* Beautiful Skeleton Wave Processing States */}
                 {loading && (
-                    <div className="space-y-4 animate-pulse bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <div className="flex items-center gap-4">
-                            <div className="h-10 w-10 bg-slate-200 rounded-full"></div>
-                            <div className="space-y-2 flex-1">
-                                <div className="h-4 bg-slate-200 rounded w-1/3"></div>
-                                <div className="h-3 bg-slate-200 rounded w-1/4"></div>
-                            </div>
-                        </div>
-                        <div className="space-y-2 pt-2">
-                            <div className="h-4 bg-slate-200 rounded w-full"></div>
-                            <div className="h-4 bg-slate-200 rounded w-5/6"></div>
-                            <div className="h-4 bg-slate-200 rounded w-2/3"></div>
-                        </div>
-                    </div>
+                    <LoaderSkeleton/>
                 )}
 
                 {/* Chronological Ledger Timeline Component */}
