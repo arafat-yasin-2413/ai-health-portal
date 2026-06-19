@@ -81,7 +81,7 @@ export default function PatientPage() {
             setLoading(true);
             setErrorMsg(null);
 
-            // ফাইলের ডিটেইলস স্টেটে সেভ করা হচ্ছে
+            // saving file details
             setSelectedFile({
                 name: file.name,
                 size: formatFileSize(file.size),
@@ -91,12 +91,18 @@ export default function PatientPage() {
             try {
                 const base64Data = await convertFileToBase64(file);
                 const result = await parseMedicalDocument(
-                    base64Data,
+                    base64Data, file.type,
                     activePatientId,
                 );
 
                 if (result.success && result.data) {
-                    appendMedicalRecord(result.data);
+
+                    const safeRecord = {
+                        ...result.data,
+                        recordId: `REC-${Math.floor(100000 + Math.random() * 900000)}`
+                    };
+
+                    appendMedicalRecord(safeRecord);
                     loadRecords();
                     setSelectedFile(null); // hide file on successfull upload
                 } else {
