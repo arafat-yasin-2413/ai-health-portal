@@ -18,36 +18,39 @@ import {
     ArrowRight,
     Sparkles,
 } from "lucide-react";
+import PatientPortalCard from "@/components/home/PatientPortalCard";
+import DoctorPortalCard from "@/components/home/DoctorPortalCard";
+import AdminPortalCard from "@/components/home/AdminPortalCard";
 
 export default function Home() {
     // const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-    // Fail-Safe Flow: Default data seed into localStorage on first load
-    if (typeof window !== "undefined") {
-        if (!localStorage.getItem("medical_patients")) {
-            localStorage.setItem(
-                "medical_patients",
-                JSON.stringify(defaultPatients),
-            );
-        }
+        // Fail-Safe Flow: Default data seed into localStorage on first load
+        if (typeof window !== "undefined") {
+            if (!localStorage.getItem("medical_patients")) {
+                localStorage.setItem(
+                    "medical_patients",
+                    JSON.stringify(defaultPatients),
+                );
+            }
 
-        if (!localStorage.getItem("medical_doctors")) {
-            localStorage.setItem(
-                "medical_doctors",
-                JSON.stringify(defaultDoctors),
-            );
-        }
+            if (!localStorage.getItem("medical_doctors")) {
+                localStorage.setItem(
+                    "medical_doctors",
+                    JSON.stringify(defaultDoctors),
+                );
+            }
 
-        if (!localStorage.getItem("medical_records")) {
-            localStorage.setItem("medical_records", JSON.stringify([]));
-        }
+            if (!localStorage.getItem("medical_records")) {
+                localStorage.setItem("medical_records", JSON.stringify([]));
+            }
 
-        if (!localStorage.getItem("medical_audit_logs")) {
-            localStorage.setItem("medical_audit_logs", JSON.stringify([]));
+            if (!localStorage.getItem("medical_audit_logs")) {
+                localStorage.setItem("medical_audit_logs", JSON.stringify([]));
+            }
         }
-    }
-}, []);
+    }, []);
 
     // if (!mounted) return null;
 
@@ -96,82 +99,9 @@ export default function Home() {
 
             {/* Portals Gateway Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                {/* Patient Portal */}
-                <Card className="flex flex-col justify-between border-slate-200 shadow-sm bg-white hover:border-indigo-200 transition-all">
-                    <CardHeader>
-                        <div className="p-2.5 w-fit bg-indigo-50 rounded-lg mb-2 text-indigo-600">
-                            <User className="h-6 w-6" />
-                        </div>
-                        <CardTitle className="text-xl font-bold text-slate-900">
-                            Patient Portal
-                        </CardTitle>
-                        <CardDescription className="text-slate-500 pt-1 text-sm leading-relaxed">
-                            Upload diagnostic documents, run Gemini/OpenAI
-                            structural parser workflows, and build an encrypted
-                            chronological medical ledger.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <Link href="/patient" className="w-full">
-                            <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium flex items-center justify-center gap-2 group">
-                                Enter Patient Hub
-                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
-
-                {/* Doctor Portal */}
-                <Card className="flex flex-col justify-between border-slate-200 shadow-sm bg-white hover:border-emerald-200 transition-all">
-                    <CardHeader>
-                        <div className="p-2.5 w-fit bg-emerald-50 rounded-lg mb-2 text-emerald-600">
-                            <Stethoscope className="h-6 w-6" />
-                        </div>
-                        <CardTitle className="text-xl font-bold text-slate-900">
-                            Doctor Portal
-                        </CardTitle>
-                        <CardDescription className="text-slate-500 pt-1 text-sm leading-relaxed">
-                            Query records via Patient ID index, track antibiotic
-                            consumption graphs, and explore categorized tabs for
-                            medical safety validation.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <Link href="/doctor" className="w-full">
-                            <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium flex items-center justify-center gap-2 group">
-                                Launch Analytics View
-                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
-
-                {/* Admin Console */}
-                <Card className="flex flex-col justify-between border-slate-200 shadow-sm bg-white hover:border-amber-200 transition-all">
-                    <CardHeader>
-                        <div className="p-2.5 w-fit bg-amber-50 rounded-lg mb-2 text-amber-600">
-                            <ShieldAlert className="h-6 w-6" />
-                        </div>
-                        <CardTitle className="text-xl font-bold text-slate-900">
-                            Admin Console
-                        </CardTitle>
-                        <CardDescription className="text-slate-500 pt-1 text-sm leading-relaxed">
-                            Manage system permissions, register/suspend IDs,
-                            audit structural engine parsing, and trigger instant
-                            premium mock data injections.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <Link href="/admin" className="w-full">
-                            <Button
-                                variant="outline"
-                                className="w-full border-slate-300 hover:bg-slate-50 text-slate-700 font-medium flex items-center justify-center gap-2 group">
-                                Open Controls Panel
-                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
+                <PatientPortalCard />
+                <DoctorPortalCard />
+                <AdminPortalCard />
             </div>
         </div>
     );

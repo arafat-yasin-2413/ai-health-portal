@@ -30,6 +30,7 @@ import {
     FileText,
     Maximize2,
 } from "lucide-react";
+import { PortalNav } from "@/components/nav/portal-nav";
 
 export default function DoctorDashboard() {
     const [mounted, setMounted] = useState(false);
@@ -80,7 +81,7 @@ export default function DoctorDashboard() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-950">
-            {/* <PortalNav /> */}
+            <PortalNav />
 
             <main className="max-w-6xl mx-auto p-4 md:p-6 mt-6 space-y-6">
                 {/* Top Search Index Bar */}

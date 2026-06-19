@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { PortalNav } from "@/components/nav/portal-nav";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -39,7 +38,7 @@ export default function RootLayout({
             )}>
             <body
                 className={`${inter.className} bg-slate-100 text-slate-900 min-h-screen antialiased`}>
-                <PortalNav/>
+                {/* <PortalNav/> */}
                 {children}
             </body>
         </html>

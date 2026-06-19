@@ -24,6 +24,7 @@ import {
     AlertCircle,
     CheckCircle2,
 } from "lucide-react";
+import { PortalNav } from "@/components/nav/portal-nav";
 
 export default function PatientPage() {
     const [mounted, setMounted] = useState(false);
@@ -137,6 +138,7 @@ export default function PatientPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-950">
+            <PortalNav/>
             <main className="max-w-5xl mx-auto p-4 md:p-6 mt-6 space-y-8">
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -221,7 +223,7 @@ export default function PatientPage() {
 
                             {/* Meta Text Stack */}
                             <div className="min-w-0">
-                                <p className="text-sm font-semibold text-slate-800 truncate max-w-[250px] sm:max-w-md">
+                                <p className="text-sm font-semibold text-slate-800 truncate max-w-62.5 sm:max-w-md">
                                     {selectedFile.name}
                                 </p>
                                 <p className="text-xs text-slate-500 font-medium flex items-center gap-2 mt-0.5">
