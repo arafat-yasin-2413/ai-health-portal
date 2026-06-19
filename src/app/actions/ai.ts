@@ -15,7 +15,7 @@ function cleanJsonString(rawString: string): string {
 }
 
 export async function parseMedicalDocument(
-    documentText: string,
+    base64Data: string,
     patientId: string,
 ): Promise<{ success: boolean; data?: MedicalRecord; error?: string }> {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
@@ -64,6 +64,7 @@ export async function parseMedicalDocument(
   `;
 
     try {
+        const base64Content = base64Data.split(",")[1] || base64Data;
         const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
             {
@@ -75,7 +76,7 @@ export async function parseMedicalDocument(
                             parts: [
                                 { text: systemPrompt },
                                 {
-                                    text: `RAW MEDICAL DOCUMENT FOR EXTRACTION:\n\n${documentText}`,
+                                    text: `RAW MEDICAL DOCUMENT FOR EXTRACTION:\n\n${base64Content}`,
                                 },
                             ],
                         },

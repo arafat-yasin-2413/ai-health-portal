@@ -31,6 +31,20 @@ export default function PatientPage() {
     const [records, setRecords] = useState<MedicalRecord[]>([]);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<{
+        name: string;
+        size: string;
+        type: string;
+    } | null>(null);
+
+    // TODO: move it to utility function
+    const formatFileSize = (bytes: number): string => {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const sizes = ["Bytest", "KB", "MB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    };
 
     const loadRecords = useCallback(() => {
         const allRecords = safeGetStorage<MedicalRecord[]>(
@@ -48,7 +62,7 @@ export default function PatientPage() {
         loadRecords();
     }, [loadRecords]);
 
-    // utility function to convert file in base64 
+    // utility function to convert file in base64
     const convertFileToBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -67,35 +81,24 @@ export default function PatientPage() {
             setLoading(true);
             setErrorMsg(null);
 
+            // ফাইলের ডিটেইলস স্টেটে সেভ করা হচ্ছে
+            setSelectedFile({
+                name: file.name,
+                size: formatFileSize(file.size),
+                type: file.type.includes("pdf") ? "PDF Document" : "Image File",
+            });
+
             try {
                 const base64Data = await convertFileToBase64(file);
-                console.log(
-                    "Successfully converted file to Base64 length:",
-                    base64Data.length,
-                );
-
-                const simulationText = `
-        Consultant: Dr. Arman Ahmed
-        Date: 2026-06-17
-        Patient Case: Chronic respiratory discomfort and acute bronchial congestion.
-        Vitals: Respiratory Rate 22 bpm. Blood Pressure 130/85 mmHg.
-        Medications:
-        1. Moxaclav 625mg (Antibiotic) - 1+0+1 - 7 Days
-        2. Sergel 20mg (Gastric) - 1+0+1 - 14 Days
-        Tests:
-        1. S. IgE Level -> Value: 350 IU/mL
-      `;
-
-                // sending data to AI pipeline
                 const result = await parseMedicalDocument(
-                    simulationText,
+                    base64Data,
                     activePatientId,
                 );
 
                 if (result.success && result.data) {
-                    // appending to localStorage
                     appendMedicalRecord(result.data);
-                    loadRecords(); // timeline refresh
+                    loadRecords();
+                    setSelectedFile(null); // hide file on successfull upload
                 } else {
                     setErrorMsg(
                         result.error ||
@@ -195,6 +198,54 @@ export default function PatientPage() {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Uploaded File Details Meta Card */}
+                {selectedFile && (
+                    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-2xs flex items-center justify-between transition-all animate-in fade-in duration-200">
+                        <div className="flex items-center gap-3 min-w-0">
+                            {/* Conditional Icon Layout */}
+                            <div
+                                className={`p-2.5 rounded-lg border shrink-0 ${
+                                    selectedFile.type === "PDF Document"
+                                        ? "bg-rose-50 border-rose-100 text-rose-600"
+                                        : "bg-blue-50 border-blue-100 text-blue-600"
+                                }`}>
+                                <FileText className="h-5 w-5" />
+                            </div>
+
+                            {/* Meta Text Stack */}
+                            <div className="min-w-0">
+                                <p className="text-sm font-semibold text-slate-800 truncate max-w-[250px] sm:max-w-md">
+                                    {selectedFile.name}
+                                </p>
+                                <p className="text-xs text-slate-500 font-medium flex items-center gap-2 mt-0.5">
+                                    <span>{selectedFile.size}</span>
+                                    <span className="text-slate-300">•</span>
+                                    <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-[10px] text-slate-600 font-bold uppercase">
+                                        {selectedFile.type}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Status Badge or Cancel Action */}
+                        <div className="flex items-center gap-2">
+                            {loading ? (
+                                <Badge className="bg-indigo-50 border-indigo-200 text-indigo-700 animate-pulse text-[11px] font-bold">
+                                    AI Extracting...
+                                </Badge>
+                            ) : (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setSelectedFile(null)}
+                                    className="h-8 w-8 p-0 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg">
+                                    ✕
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {errorMsg && (
                     <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl flex items-center gap-3 text-sm font-medium">
